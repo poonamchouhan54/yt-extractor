@@ -7,16 +7,29 @@ app = Flask(__name__)
 def extract():
     url = request.args.get('url')
     if not url:
-        return jsonify({"error": "URL missing"}), 400
+        return jsonify({"status": "error", "message": "URL missing"}), 400
     
-    ydl_opts = {'format': 'best', 'quiet': True}
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'tv_embedded']
+            }
+        }
+    }
+    
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
+            stream_url = info.get('url', '')
+            title = info.get('title', 'Unknown')
+            
             return jsonify({
                 "status": "success", 
-                "stream_url": info.get('url', ''),
-                "title": info.get('title', '')
+                "stream_url": stream_url,
+                "title": title
             })
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
