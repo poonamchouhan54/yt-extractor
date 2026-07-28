@@ -1,0 +1,11 @@
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'cookiefile': 'cookies.txt',  # Yeh line add karni hai
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android']
+            }
+        }
+    }
